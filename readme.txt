@@ -12,7 +12,7 @@ Check your latest issues from BitBucket directly on your WordPress dashboard.
 
 == Description ==
 
-With this plugin you can easily check your latest issues on BitBucket ridht on your Dashboard.
+With this plugin you can easily check your latest issues on BitBucket right on your Dashboard.
 The recently created and the solved ones.
 
 There are two widgets available after install:
