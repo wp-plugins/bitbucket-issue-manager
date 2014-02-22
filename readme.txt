@@ -12,7 +12,7 @@ Check your latest issues from BitBucket directly on your WordPress dashboard.
 
 == Description ==
 
-= What's this? ==
+= What's this? =
 
 This plugins just aims to be a simple solution to check your project issues or tasks on hold, and completed right inside your WordPress dashboard. However, i pretend to add some extra features soon as shown at the bottom of this section.
 
@@ -21,7 +21,7 @@ At the moment, there are two dashboard widgets available after install:
 * Recently opened issues
 * Recently closed issues
 
-== Upcoming ==
+= Upcoming =
 
 * Issue listing page.
 * Front-end widget
