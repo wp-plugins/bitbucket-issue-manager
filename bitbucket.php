@@ -5,9 +5,10 @@
 Plugin Name:		Bitbucket Issue Manager
 Plugin URI:			http://gabrielgil.es/bitbucket-issue-manager
 Description:		Adds useful widgets to track your recent bitbucket issues. I pretend add more features soon. (Front-end widgets, issue listing page etc). That's why the plugin is called <strong>Manager</strong> and not just <strong>Dashboard widgets</strong>.
-Version:			0.8.2
+Version:			0.8.3
 Author:				Gabriel Gil
 Author URI:			http://gabrielgil.es/
+Text Domain:		bim
 License:			GPLv2 or later
 License URI:		http://www.gnu.org/licenses/gpl-2.0.html
 GitHub Plugin URI:	gabrielgil/bitbucket-issue-manager
@@ -62,16 +63,42 @@ GitHub Plugin URI:	gabrielgil/bitbucket-issue-manager
 
 /*************************************************************************
 
+						REQUIRES
+
+**************************************************************************/
+
+require_once( 'class/bitbucket.general.php' );
+require_once( 'class/bitbucket.issue.php' );
+
+
+
+/*************************************************************************
+
+						LOCALIZATION
+
+**************************************************************************/
+
+add_action('plugins_loaded', function () {
+	load_plugin_textdomain( 'bim', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
+});
+
+
+/*************************************************************************
+
 						OPTIONS FIELDS
 
 **************************************************************************/
 
 
-/*
- * Add settings fields to general settings page
- * 
+/**
+ * Add settings fields to general settings page.
+ *
  * Hooks into admin_init to add options to save the username and
  * repository names.
+ *
+ * @since 0.7
+ *
+ * @return null Description.
  */
 
 add_action( 'admin_init', function ()
@@ -80,7 +107,7 @@ add_action( 'admin_init', function ()
  	// fields to it
  	add_settings_section(
 		'bim-settings-section',
-		'Bitbucket Issue Manager Settings',
+		__( 'Bitbucket Issue Manager Settings', 'bim' ),
 		'bim_setting_section_callback',
 		'general'
 	);
@@ -88,7 +115,7 @@ add_action( 'admin_init', function ()
 	// Add the username field
 	add_settings_field(
 		'bim-username',
-		'BitBucket Username',
+		__( 'BitBucket Username', 'bim' ),
 		'bim_username_field_callback',
 		'general',
 		'bim-settings-section'
@@ -98,7 +125,7 @@ add_action( 'admin_init', function ()
 	
 	add_settings_field(
 		'bim-repository',
-		'BitBucket Repository',
+		__( 'BitBucket Repository', 'bim' ),
 		'bim_repository_field_callback',
 		'general',
 		'bim-settings-section'
@@ -137,7 +164,7 @@ if ( !get_option( 'bim-username' ) || !get_option( 'bim-repository' ) )
 	{
 		?>
 	    <div class="updated">
-	        <p><?php printf( __( 'Config Bitbucket <b>username</b> and the <b>repository</b> you want to track under <b>Settings > <a href="%s">General</a></b> options page!', 'bim' ), site_url('/wp-admin/options-general.php') . '#bim' ); ?></p>
+	        <p><?php _e( 'Config Bitbucket username and the repository you want to track under Settings, General options page!', 'bim' ); ?></p>
 	    </div>
 	    <?php
 	});
@@ -153,7 +180,7 @@ if ( !get_option( 'bim-username' ) || !get_option( 'bim-repository' ) )
 function bim_setting_section_callback ()
 { 
 	echo '<a id="bim"></a>
-		<p>Here you can set you BitBucket username and the repository you want manage.</p>';
+		<p>' . __( 'Here you can set you BitBucket username and the repository you want manage.', 'bim') . '</p>';
 }
 
 function bim_username_field_callback ()
@@ -216,13 +243,13 @@ add_action('wp_dashboard_setup', function ()
 {
 	wp_add_dashboard_widget (
 		'bitbucket_resolved_issues',
-		__('Últimas incidencias resueltas'),
+		__('Last solved issues', 'bim'),
 		'bitbucket_resolved_issues_content'
 	);
 	
 	wp_add_dashboard_widget(
 		'bitbucket_pending_issues',
-		__('Últimas incidencias pendientes'),
+		__('Last pending issues', 'bim'),
 		'bitbucket_pending_issues_content'
 	);
 });
@@ -264,43 +291,11 @@ add_filter('plugin_action_links', function ($links, $file) {
  
     if ( $file == 'bitbucket-issue-manager/bitbucket.php' ) {
         /* Insert the link at the end*/
-        $links['settings'] = sprintf( '<a href="%s"> %s </a>', admin_url( 'options-general.php' ), __( 'Settings', 'plugin_domain' ) );
+        $links['settings'] = sprintf( '<a href="%s"> %s </a>', admin_url( 'options-general.php#bim' ), __( 'Settings', 'bim' ) );
     }
     return $links;
  
 }, 10, 2);
-
-
-
-/*
- * Options Page
- *
- * Creates the options page to store the Client ID
- */
-
-add_action('admin_init', 'seo_meta_description_register');
-
-function seo_meta_description_register ()
-{
-	register_setting('reading', 'meta_description', 'sanitize_html');
-}
-
-function sanitize_html ($input)
-{
-	return strip_tags(substr($input, 0, 160));
-}
-
-add_action( 'admin_menu', 'seo_meta_description' );
-
-function seo_meta_description()
-{
-	add_settings_field( 'meta_description', __('Default description for the meta tag'), 'description_input_area', 'reading' );
-	
-	//add_settings_section( 'test-id-setting', 'Title of my section', 'test_output', 'general' );
-	function description_input_area($args){
-		echo '<textarea name="meta_description" rows="5" cols="50" id="meta_description" class="large-text code">'.get_option('meta_description').'</textarea>';
-	}
-}
 
 
 
@@ -333,12 +328,24 @@ function file_get_contents_curl($url) {
 
 
 /*
- * Get BitBucket issue URL
+ * Get BitBucket endpoint
  *
- * Generates the URL for the given bitbucket issue ID
+ * Returns the bitbucket endpoint according API version
  */
 
-function get_bitbucket_issue_url ( $id )
-{
-	return 'https://bitbucket.org/' . BITBUCKET_USERNAME . '/' . BITBUCKET_REPOSITORY ."/issue/$id/";
+function get_bitbucket_endpoint ( $version = 1 ) {
+
+	if ( $version==1 ) {
+		$version = 1;
+	} else {
+		$version = 2;
+	}
+	return "https://bitbucket.org/api/$version.0";
 }
+
+function get_bitbucket_issues_admin () {
+	return 'https://bitbucket.org/' . BITBUCKET_USERNAME . '/' . BITBUCKET_REPOSITORY . '/admin/issues';
+}
+
+
+
