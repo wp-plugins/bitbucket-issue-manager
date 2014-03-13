@@ -19,7 +19,7 @@ class Bitbucket_Issue {
 	
 	static function get_issues ( $status='open', $limit=5 ) {
 	
-		$bitbucket_request_uri = get_bitbucket_endpoint() . '/repositories/' . BITBUCKET_USERNAME . '/' . BITBUCKET_REPOSITORY . "/issues?status=$status&limit=$limit";
+		$bitbucket_request_uri = get_bitbucket_endpoint() . '/repositories/' . BITBUCKET_USERNAME . '/' . BITBUCKET_REPOSITORY . "/issues?status=$status&sort=-utc_last_updated&limit=$limit";
 	    return json_decode(file_get_contents_curl($bitbucket_request_uri));
 	}
 	
@@ -53,7 +53,7 @@ class Bitbucket_Issue {
 	    	echo '<li>';
 	    	echo '<p>';
 	    	echo '<span style="float:right;" >
-	    			<strong>' . human_time_diff(strtotime($issue->created_on)) . '</strong>' . '</span>';
+	    			<strong>' . human_time_diff(strtotime($issue->utc_created_on)) . '</strong>' . '</span>';
 			echo '<a href="' . Bitbucket_Issue::get_bitbucket_issue_url( $issue->local_id ) . '" target="_blank">' . $issue->title . '</a>'
 					. ' ('. human_time_diff(strtotime($issue->utc_last_updated)) . ')'. '<br />';
 			echo $first_issue ? $issue->content : '';
