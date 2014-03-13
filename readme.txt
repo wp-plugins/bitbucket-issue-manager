@@ -1,10 +1,10 @@
 === Bitbucket Issue Manager ===
 Contributors: gabrielbs
 Donate link: http://goo.gl/v9CW1R
-Tags: bitbucket, widgets, dashboard,
+Tags: bitbucket, widget, widgets, shortcode, dashboard, admin
 Requires at least: 3
 Tested up to: 3.8.1
-Stable tag: 0.8.3
+Stable tag: 0.8.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -36,7 +36,12 @@ You can also wirte me directly at hello (at) gabrielgil (dot) es
 
 = Translations =
 
-Righ now this plugins is in process to be full compatible with locations, but it's available in `en_US` by default.
+The following translations are available since version 0.8.3
+
+* English US
+* Spanish (Spain)
+
+If you want to contribute translating this plugin to your lang, please open an issue on GitHub plugin's page.
 
 == Installation ==
 
@@ -62,6 +67,10 @@ Please, make sure your repository issues are public.
 1. Example General Settings page showing the BitBucket issue manager fields.
 
 == Changelog ==
+
+= 0.8.4 =
+* Order by Last Updated Time
+* Fix link to settings page
 
 = 0.8.3 =
 * Now the issue date is shown using `human_diff_time()`. (e.g. *5 hours ago* instead *02-18-2013*)
