@@ -4,7 +4,7 @@ Donate link: http://goo.gl/v9CW1R
 Tags: bitbucket, widget, widgets, shortcode, dashboard, admin
 Requires at least: 3
 Tested up to: 4.1
-Stable tag: 0.8.4
+Stable tag: 0.8.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
