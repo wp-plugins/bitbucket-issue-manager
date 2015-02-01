@@ -3,7 +3,7 @@ Contributors: gabrielbs
 Donate link: http://goo.gl/v9CW1R
 Tags: bitbucket, widget, widgets, shortcode, dashboard, admin
 Requires at least: 3
-Tested up to: 3.8.1
+Tested up to: 4.1
 Stable tag: 0.8.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -68,9 +68,12 @@ Please, make sure your repository issues are public.
 
 == Changelog ==
 
+= 0.8.5 =
+* No CURL required. WP-HTTP API is used
+* Bugfixes (5.6 compilant)
+
 = 0.8.4 =
 * Order by Last Updated Time
-* Fix link to settings page
 
 = 0.8.3 =
 * Now the issue date is shown using `human_diff_time()`. (e.g. *5 hours ago* instead *02-18-2013*)
@@ -86,7 +89,7 @@ that version).
 * Added admin notice when the user or repo are not set in General Settings page.
 
 = 0.8.1 =
-* Added hability to delete self data on uninstall. 
+* Added hability to delete self data on uninstall.
 
 = 0.8 =
 * Initial release on Wordpress.org
