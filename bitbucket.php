@@ -19,7 +19,7 @@ GitHub Plugin URI:	gabrielgil/bitbucket-issue-manager
 /*************************************************************************
 
 						INDEX
-					
+
 			* -> License
 			* -> Options
 			* -> Notices
@@ -46,7 +46,7 @@ GitHub Plugin URI:	gabrielgil/bitbucket-issue-manager
 /*  Copyright 2014  Gabriel Gil  (email : hello@gabrielgil.es)
 
     This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License, version 2, as 
+    it under the terms of the GNU General Public License, version 2, as
     published by the Free Software Foundation.
 
     This program is distributed in the hope that it will be useful,
@@ -111,7 +111,7 @@ add_action( 'admin_init', function ()
 		'bim_setting_section_callback',
 		'general'
 	);
-	
+
 	// Add the username field
 	add_settings_field(
 		'bim-username',
@@ -122,7 +122,7 @@ add_action( 'admin_init', function ()
 	);
 	// Register the field so we can sanitize it.
 	register_setting( 'general', 'bim-username' );
-	
+
 	add_settings_field(
 		'bim-repository',
 		__( 'BitBucket Repository', 'bim' ),
@@ -173,12 +173,12 @@ if ( !get_option( 'bim-username' ) || !get_option( 'bim-repository' ) )
 
 /*
  * Callback functions
- * 
+ *
  * The following functions prints the info, and the input elements.
  */
 
 function bim_setting_section_callback ()
-{ 
+{
 	echo '<a id="bim"></a>
 		<p>' . __( 'Here you can set you BitBucket username and the repository you want manage.', 'bim') . '</p>';
 }
@@ -200,23 +200,26 @@ define('BITBUCKET_REPOSITORY',	get_option( 'bim-repository' ));
 
 /*
  * Uninstall hook
- * 
+ *
  * Register the uninstall hook to be called when the plugin is uninstalled
  * via the Plugins page.
  */
 
 // Register the hook
-if ( function_exists('register_uninstall_hook') )
+if ( function_exists('register_uninstall_hook') ) {
 	register_uninstall_hook( __FILE__, 'uninstall_bim');
+}
 
 // Callback function
-function uninstall_bim() {
+function uninstall_bim()
+{
 	//if uninstall not called from WordPress exit
-	if ( !defined( 'WP_UNINSTALL_PLUGIN' ) ) 
-	    exit();
-	
+	if ( !defined( 'WP_UNINSTALL_PLUGIN' ) ) {
+		//exit();
+	}
+
 	// For Single site
-	if ( !is_multisite() ) 
+	if ( !is_multisite() )
 	{
 	    delete_option( 'bim-username' );
 	    delete_option( 'bim-repository' );
@@ -234,7 +237,7 @@ function uninstall_bim() {
 
 /*
  * Dashboard Widget
- * 
+ *
  * Register the widgets this plugin gonna add. We di it under the
  * wp_dashboard_setup action.
  */
@@ -246,7 +249,7 @@ add_action('wp_dashboard_setup', function ()
 		__('Last solved issues', 'bim'),
 		'bitbucket_resolved_issues_content'
 	);
-	
+
 	wp_add_dashboard_widget(
 		'bitbucket_pending_issues',
 		__('Last pending issues', 'bim'),
@@ -288,13 +291,13 @@ include_once('widgets/dashboard_pending.php');
  */
 
 add_filter('plugin_action_links', function ($links, $file) {
- 
+
     if ( $file == 'bitbucket-issue-manager/bitbucket.php' ) {
         /* Insert the link at the end*/
         $links['settings'] = sprintf( '<a href="%s"> %s </a>', admin_url( 'options-general.php#bim' ), __( 'Settings', 'bim' ) );
     }
     return $links;
- 
+
 }, 10, 2);
 
 
@@ -305,35 +308,14 @@ add_filter('plugin_action_links', function ($links, $file) {
 
 **************************************************************************/
 
-/*
- * File Get Contents using CURLS
- *
- * Retrieves the content of the given URL using CURL
- */
-
-function file_get_contents_curl($url) {
-	$ch = curl_init();
-	
-	curl_setopt($ch, CURLOPT_HEADER, 0);
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); //Set curl to return the data instead of printing it to the browser.
-	curl_setopt($ch, CURLOPT_URL, $url);
-	
-	$data = curl_exec($ch);
-	
-	//var_dump($data);
-	curl_close($ch);
-	
-	return $data;
-}
-
 
 /*
  * Get BitBucket endpoint
  *
  * Returns the bitbucket endpoint according API version
  */
-
-function get_bitbucket_endpoint ( $version = 1 ) {
+function get_bitbucket_endpoint($version = 1)
+{
 
 	if ( $version==1 ) {
 		$version = 1;
@@ -343,9 +325,7 @@ function get_bitbucket_endpoint ( $version = 1 ) {
 	return "https://bitbucket.org/api/$version.0";
 }
 
-function get_bitbucket_issues_admin () {
+function get_bitbucket_issues_admin ()
+{
 	return 'https://bitbucket.org/' . BITBUCKET_USERNAME . '/' . BITBUCKET_REPOSITORY . '/admin/issues';
 }
-
-
-
